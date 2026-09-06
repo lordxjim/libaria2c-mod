@@ -131,7 +131,7 @@ jobs:
             --without-libcares --disable-async-dns \
             --without-sqlite3 --without-libssh2 --without-libgmp \
             CPPFLAGS="-I$PREFIX/include" \
-            LDFLAGS="-L$PREFIX/lib" \
+            LDFLAGS="-L$PREFIX/lib -static-libstdc++" \
             ZLIB_CFLAGS="-I$PREFIX/include" \
             ZLIB_LIBS="-L$PREFIX/lib -lz"
           # ===== 静默降级防火墙：三个宏缺任何一个，构建立即红 =====
