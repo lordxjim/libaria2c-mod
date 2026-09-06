@@ -58,7 +58,7 @@ jobs:
           cd openssl-openssl-3.0.13
           export ANDROID_NDK_ROOT=$NDK
           export PATH=$TOOLCHAIN/bin:$PATH
-          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX
+          ./Configure android-arm no-shared no-tests no-module -D__ANDROID_API__=24 --prefix=$PREFIX
           make -j$(nproc) build_sw
           make install_sw
           test -f $PREFIX/lib/libcrypto.a && test -f $PREFIX/lib/libssl.a \
