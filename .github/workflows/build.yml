@@ -23,7 +23,7 @@ jobs:
           echo "PREFIX=$RUNNER_TEMP/prefix" >> $GITHUB_ENV
           mkdir -p $RUNNER_TEMP/prefix
           # 本步内 $TOOLCHAIN 尚未注入（GITHUB_ENV 下一步才生效），必须用完整路径
-          ls $RUNNER_TEMP/android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang \
+          ls $RUNNER_TEMP/android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang \
             || { echo "::error::armv7 clang 包装器不存在，NDK 解压异常"; exit 1; }
 
       - name: Build zlib (static)
@@ -36,7 +36,7 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake \
             -DANDROID_NDK=$NDK \
             -DANDROID_ABI=armeabi-v7a \
-            -DANDROID_PLATFORM=android-21 \
+            -DANDROID_PLATFORM=android-24 \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_INSTALL_PREFIX=$PREFIX
@@ -58,7 +58,7 @@ jobs:
           cd openssl-openssl-3.0.13
           export ANDROID_NDK_ROOT=$NDK
           export PATH=$TOOLCHAIN/bin:$PATH
-          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=21 --prefix=$PREFIX
+          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX
           make -j$(nproc) build_sw
           make install_sw
           test -f $PREFIX/lib/libcrypto.a && test -f $PREFIX/lib/libssl.a \
@@ -75,8 +75,8 @@ jobs:
             --prefix=$PREFIX \
             --enable-static --disable-shared \
             --without-docbook --without-examples --without-tests \
-            CC=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang \
-            CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang++ \
+            CC=$TOOLCHAIN/bin/armv7a-linux-androideabi24-clang \
+            CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi24-clang++ \
             AR=$TOOLCHAIN/bin/llvm-ar \
             RANLIB=$TOOLCHAIN/bin/llvm-ranlib
           make -j$(nproc)
@@ -90,7 +90,7 @@ jobs:
             test -f $PREFIX/lib/$lib || { echo "::error::缺少 $PREFIX/lib/$lib，依赖安装路径偏差"; exit 1; }
           done
           echo "四个静态库全部就位；pkgconfig 目录：$(ls $PREFIX/lib/pkgconfig)"
-          $TOOLCHAIN/bin/armv7a-linux-androideabi21-clang --version | head -1
+          $TOOLCHAIN/bin/armv7a-linux-androideabi24-clang --version | head -1
 
       - name: Get aria2 source
         run: |
@@ -115,8 +115,8 @@ jobs:
       - name: Configure and build aria2
         run: |
           cd $RUNNER_TEMP/aria2-$ARIA2_VER
-          export CC=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang
-          export CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi21-clang++
+          export CC=$TOOLCHAIN/bin/armv7a-linux-androideabi24-clang
+          export CXX=$TOOLCHAIN/bin/armv7a-linux-androideabi24-clang++
           export AR=$TOOLCHAIN/bin/llvm-ar
           export RANLIB=$TOOLCHAIN/bin/llvm-ranlib
           export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
