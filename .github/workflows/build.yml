@@ -53,12 +53,12 @@ jobs:
         run: |
           cd $RUNNER_TEMP
           # 用 GitHub tag 归档而非 openssl.org：后者会把被取代的补丁版挪进 old/ 路径
-          curl -fSL -o openssl.tar.gz https://github.com/openssl/openssl/archive/refs/tags/openssl-3.0.13.tar.gz
+          curl -fSL -o openssl.tar.gz https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz
           tar xf openssl.tar.gz
-          cd openssl-openssl-3.0.13
+          cd openssl-OpenSSL_1_1_1w
           export ANDROID_NDK_ROOT=$NDK
           export PATH=$TOOLCHAIN/bin:$PATH
-          ./Configure android-arm no-shared no-tests no-module no-asm -D__ANDROID_API__=24 --prefix=$PREFIX
+          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX
           make -j$(nproc) build_sw
           make install_sw
           test -f $PREFIX/lib/libcrypto.a && test -f $PREFIX/lib/libssl.a \
