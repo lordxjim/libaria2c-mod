@@ -58,7 +58,10 @@ jobs:
           cd openssl-OpenSSL_1_1_1w
           export ANDROID_NDK_ROOT=$NDK
           export PATH=$TOOLCHAIN/bin:$PATH
-          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX
+          # Nov 10, 2021, openssl fix it. https://github.com/openssl/openssl/pull/15086
+          # now we can use -latomic to fix the build error.
+          LDFLAGS="-latomic -Wl,-z,max-page-size=16384"
+          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX $LDFLAGS
           make -j$(nproc) build_sw
           make install_sw
           test -f $PREFIX/lib/libcrypto.a && test -f $PREFIX/lib/libssl.a \
