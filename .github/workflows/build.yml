@@ -53,15 +53,15 @@ jobs:
         run: |
           cd $RUNNER_TEMP
           # 用 GitHub tag 归档而非 openssl.org：后者会把被取代的补丁版挪进 old/ 路径
-          curl -fSL -o openssl.tar.gz https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz
+          curl -fSL -o openssl.tar.gz https://github.com/openssl/openssl/archive/refs/tags/openssl-3.5.8.tar.gz
           tar xf openssl.tar.gz
-          cd openssl-OpenSSL_1_1_1w
+          cd openssl-openssl-3.5.8
           export ANDROID_NDK_ROOT=$NDK
           export PATH=$TOOLCHAIN/bin:$PATH
           # Nov 10, 2021, openssl fix it. https://github.com/openssl/openssl/pull/15086
           # now we can use -latomic to fix the build error.
-          LDFLAGS="-latomic -Wl,-z,max-page-size=16384"
-          ./Configure android-arm no-shared no-tests -D__ANDROID_API__=24 --prefix=$PREFIX $LDFLAGS
+          LDFLAGS="-latomic"
+          ./Configure android-arm no-shared no-tests no-module -D__ANDROID_API__=24 --prefix=$PREFIX $LDFLAGS
           make -j$(nproc) build_sw
           make install_sw
           test -f $PREFIX/lib/libcrypto.a && test -f $PREFIX/lib/libssl.a \
@@ -163,3 +163,4 @@ jobs:
           name: libaria2c-armeabi-v7a
           path: ${{ runner.temp }}/libaria2c.so
           if-no-files-found: error
+          
